@@ -11,7 +11,10 @@ export default function PasswordStrengthText(props: PasswordStrengthTextProps) {
   const classItem = cx({
     "text-xs text-end pt-1": true,
     "text-red-500":
-      strength == "Very weak" || strength == "Weak" || strength == "Not Match"
+      strength == "Very weak" ||
+      strength == "Weak" ||
+      strength == "Not Match" ||
+      strength == "Email/password failed"
         ? true
         : false,
     "text-emerald-500": strength == "Medium" ? true : false,

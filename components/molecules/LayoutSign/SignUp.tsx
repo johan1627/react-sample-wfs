@@ -19,7 +19,6 @@ export default function SignUp() {
 
   const [passwordStrength, setPasswordStrength] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
-
   const [matchPassword, setMatchPassword] = useState("");
 
   const onSubmit = () => {
@@ -42,6 +41,9 @@ export default function SignUp() {
   };
 
   const onChangePassword = (e: any) => {
+    // reset Value RePassword
+    setRePassword("");
+
     // set Value Password
     setPassword(e.target.value);
 
@@ -60,6 +62,8 @@ export default function SignUp() {
       SetBtnDisabled(true);
     } else {
       if (password != e.target.value) {
+        SetBtnDisabled(true);
+      } else if (passwordStrength != "Strong") {
         SetBtnDisabled(true);
       } else {
         SetBtnDisabled(false);
@@ -82,6 +86,8 @@ export default function SignUp() {
       SetBtnDisabled(true);
     } else {
       if (password != e.target.value) {
+        SetBtnDisabled(true);
+      } else if (passwordStrength != "Strong") {
         SetBtnDisabled(true);
       } else {
         SetBtnDisabled(false);
@@ -201,7 +207,7 @@ export default function SignUp() {
             </div>
 
             <Link href="/sign-in/">
-              <p className="text-xs text-slate-500 text-center py-6 underline cursor-pointer">
+              <p className="text-xs text-slate-500 text-center my-6 underline cursor-pointer">
                 back to sign in
               </p>
             </Link>

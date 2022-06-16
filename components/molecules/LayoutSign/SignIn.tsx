@@ -5,6 +5,7 @@ import InputFieldPassword from "../../atoms/InputFieldPassword";
 import BtnSign from "./BtnSign";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import PasswordStrengthText from "../../atoms/InputFieldPassword/PasswordStrengthText";
 
 export default function SignIn() {
   const router = useRouter();
@@ -12,21 +13,27 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [btnDisabled, SetBtnDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [matchcredential, setMatchcredential] = useState("");
 
   const onSubmit = () => {
     // start loading
     SetBtnDisabled(true);
     setIsLoading(true);
 
-    // save to local storage
-    const tmp = {
-      email: email,
-      pass: password,
-    };
-    localStorage.setItem("tmp_credential", JSON.stringify(tmp));
+    // get to local storage
+    const getFromLocal = localStorage.getItem("tmp_credential");
+    const parse = JSON.parse(getFromLocal!);
+    const emailFromLocal = parse.email;
+    const passFromLocal = parse.pass;
 
     // go home page
-    router.push("/");
+    if (email != emailFromLocal) {
+      setMatchcredential("Email/password failed");
+    } else if (password != passFromLocal) {
+      setMatchcredential("Email/password failed");
+    } else {
+      router.push("/");
+    }
 
     // end loading
     setIsLoading(false);
@@ -70,6 +77,7 @@ export default function SignIn() {
                 }
               }}
             />
+            <PasswordStrengthText strength={matchcredential} />
 
             {/* Button */}
             <div className="mt-8">
@@ -84,7 +92,7 @@ export default function SignIn() {
             </div>
 
             <Link href="/sign-up/">
-              <p className="text-xs text-slate-500 text-center py-6 underline cursor-pointer">
+              <p className="text-xs text-slate-500 text-center my-6 underline cursor-pointer">
                 don`t have account? sign up
               </p>
             </Link>
