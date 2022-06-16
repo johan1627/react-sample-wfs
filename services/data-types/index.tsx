@@ -25,3 +25,14 @@ export interface CharacterTypes {
   alive: true;
   image: string;
 }
+
+export interface GetServerSideProps {
+  req: {
+    cookies: {
+      "tmp-token": string;
+    };
+  };
+  params: {
+    id: string;
+  };
+}

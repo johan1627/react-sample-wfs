@@ -6,6 +6,7 @@ import BtnSign from "./BtnSign";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import PasswordStrengthText from "../../atoms/InputFieldPassword/PasswordStrengthText";
+import Cookies from "js-cookie";
 
 export default function SignIn() {
   const router = useRouter();
@@ -32,6 +33,8 @@ export default function SignIn() {
     } else if (password != passFromLocal) {
       setMatchcredential("Email/password failed");
     } else {
+      const smpToken = "BQmpPkQ1pLt9SOlkJVOL1QWWrPpc0IZ8k3CXXZ03";
+      Cookies.set("tmp-token", smpToken, { expires: 1 });
       router.push("/");
     }
 

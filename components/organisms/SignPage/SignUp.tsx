@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import LayoutSignIn from "./LayoutSignIn";
 import InputFieldEmail from "../../atoms/InputFieldEmail";
 import InputFieldPassword from "../../atoms/InputFieldPassword";
 import BtnSign from "./BtnSign";
@@ -7,6 +6,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import PasswordStrengthText from "../../atoms/InputFieldPassword/PasswordStrengthText";
 import PasswordHelperText from "../../atoms/InputFieldPassword/PasswordHelperText";
+import LayoutSignIn from "../../molecules/LayoutSign/LayoutSignIn";
 
 export default function SignUp() {
   const router = useRouter();
