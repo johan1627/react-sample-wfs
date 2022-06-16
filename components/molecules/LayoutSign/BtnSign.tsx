@@ -13,7 +13,7 @@ export default function BtnSign(props: ButtonSignInProps) {
   const { lable, onClick, disable, isLoading } = props;
   const classItem = cx({
     "py-2 px-8 rounded-md duration-500 md:w-64 w-full": true,
-    "bg-green-600 hover:bg-green-700": !disable,
+    "bg-sky-500 hover:bg-sky-600": !disable,
     "bg-gray-400": disable,
   });
 
@@ -22,7 +22,7 @@ export default function BtnSign(props: ButtonSignInProps) {
       <div className="md:flex md:justify-center">
         <button disabled={disable} onClick={onClick} className={classItem}>
           <div className="flex flex-row justify-center items-center">
-            <div className="flex justify-center font-medium text-slate-100">
+            <div className="flex justify-center font-medium text-white">
               {lable}
             </div>
             <SpinnerProgressLoad isLoading={isLoading} />
