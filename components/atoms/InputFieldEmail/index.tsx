@@ -18,6 +18,9 @@ export default function index(props: InputFieldEmailProps) {
           placeholder="email@domain.com"
           value={value}
           onChange={onChange}
+          // onClick={() => {
+          //   console.log("testingn");
+          // }}
         />
       </div>
     </>

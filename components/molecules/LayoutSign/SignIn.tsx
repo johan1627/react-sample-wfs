@@ -1,9 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import LayoutSignIn from "./LayoutSignIn";
 import InputFieldEmail from "../../atoms/InputFieldEmail";
 import InputFieldPassword from "../../atoms/InputFieldPassword";
+import BtnSign from "./BtnSign";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function SignIn() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [btnDisabled, SetBtnDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = () => {
+    // start loading
+    SetBtnDisabled(true);
+    setIsLoading(true);
+
+    // save to local storage
+    const tmp = {
+      email: email,
+      pass: password,
+    };
+    localStorage.setItem("tmp_credential", JSON.stringify(tmp));
+
+    // go home page
+    router.push("/");
+
+    // end loading
+    setIsLoading(false);
+  };
+
   return (
     <>
       <LayoutSignIn>
@@ -15,46 +43,51 @@ export default function SignIn() {
             {/* Email */}
             <div className="mb-4">
               <InputFieldEmail
-                value=""
+                value={email}
                 onChange={(e) => {
-                  //   setEmail(e.target.value);
-                  //
-                  //   if (password == "") {
-                  //     SetBtnDisabled(true);
-                  //   } else {
-                  //     SetBtnDisabled(false);
-                  //   }
+                  setEmail(e.target.value);
+
+                  if (password == "") {
+                    SetBtnDisabled(true);
+                  } else {
+                    SetBtnDisabled(false);
+                  }
                 }}
               />
             </div>
 
             {/* Password */}
             <InputFieldPassword
-              value=""
-              //   value={password}
+              lable="Password"
+              value={password}
               onChange={(e) => {
-                //   setPassword(e.target.value);
-                //   //
-                //   if (email == "") {
-                //     SetBtnDisabled(true);
-                //   } else {
-                //     SetBtnDisabled(false);
-                //   }
+                setPassword(e.target.value);
+                //
+                if (email == "") {
+                  SetBtnDisabled(true);
+                } else {
+                  SetBtnDisabled(false);
+                }
               }}
             />
 
             {/* Button */}
             <div className="mt-8">
-              <button>submit</button>
-              {/* <ButtonSignIn
-                lable="Masuk"
+              <BtnSign
+                lable="Sign In"
                 onClick={() => {
                   onSubmit();
                 }}
                 disable={btnDisabled}
                 isLoading={isLoading}
-              /> */}
+              />
             </div>
+
+            <Link href="/sign-up/">
+              <p className="text-xs text-slate-500 text-center py-6 underline cursor-pointer">
+                don`t have account? sign up
+              </p>
+            </Link>
           </div>
         </div>
       </LayoutSignIn>
