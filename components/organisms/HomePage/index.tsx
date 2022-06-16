@@ -1,9 +1,10 @@
 import React from "react";
+import LayoutHome from "../../molecules/LayoutHome";
 
 export default function index() {
   return (
     <>
-      <div>this is a home page</div>
+      <LayoutHome>dd</LayoutHome>
     </>
   );
 }
