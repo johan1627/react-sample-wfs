@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import LayoutSignIn from "./LayoutSignIn";
+import LayoutSignIn from "../../molecules/LayoutSign/LayoutSignIn";
 import InputFieldEmail from "../../atoms/InputFieldEmail";
 import InputFieldPassword from "../../atoms/InputFieldPassword";
 import BtnSign from "./BtnSign";

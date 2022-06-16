@@ -1,6 +1,6 @@
 import Head from "next/head";
 import React from "react";
-import SignIn from "../components/molecules/LayoutSign/SignIn";
+import SignIn from "../components/organisms/SignPage/SignIn";
 
 export default function SignInPage() {
   return (
