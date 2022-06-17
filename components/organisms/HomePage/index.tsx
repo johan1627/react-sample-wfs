@@ -27,6 +27,7 @@ export default function HomePage() {
   const [characters, setCharacters] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(endd);
+  const [charactersAll, setCharactersAll] = useState([]);
 
   // pagination
   const [pagingData, setPagingData] = useState<{ number: number }[]>([]);
@@ -106,6 +107,7 @@ export default function HomePage() {
 
       // set to UI for Data Character
       setCharacters(newArr);
+      setCharactersAll(res.data);
 
       // set to UI for Paging
       setTotalPage(totalPage);
@@ -203,6 +205,17 @@ export default function HomePage() {
     enTotalPages(v);
   };
 
+  const onSearch = (e: string) => {
+    // console.log("se", e.target.value);
+    // const search = charactersAll.find((element) => element.name < 9);
+    const search = charactersAll.find((item) => item["name"] === e);
+
+    if (search) {
+      // console.log("ketemu");
+      setCharacters([search]);
+    }
+  };
+
   // initial Load
   useEffect(() => {
     gett();
@@ -212,6 +225,16 @@ export default function HomePage() {
     <>
       <LayoutHome>
         <>
+          <div className="py-2 ">
+            <input
+              onChange={(e) => {
+                const v = e.target.value;
+                onSearch(v);
+              }}
+              className="px-2 text-slate-700 text-sm bg-white w-1/3 h-8 drop-shadow-sm rounded-md placeholder:text-xs placeholder:px-2"
+              placeholder="search name..."
+            ></input>
+          </div>
           {/* Grid */}
           <div className=" bg-white rounded-lg shadow-md hover:shadow-lg h-3/4 overflow-auto">
             {/* table */}
