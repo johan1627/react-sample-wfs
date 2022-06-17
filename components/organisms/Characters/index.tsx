@@ -1,9 +1,43 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TextListTile from "./TextListTile";
 
-export default function index() {
+export default function CharacterDetail() {
+  const [character, setCharacter] = useState({
+    name: "",
+    species: "",
+    gender: "",
+    house: "",
+    dateOfBirth: "",
+    yearOfBirth: 0,
+    wizard: false,
+    ancestry: "",
+    eyeColour: "",
+    hairColour: "",
+    wand: [],
+    patronus: "",
+    hogwartsStudent: false,
+    hogwartsStaff: false,
+    actor: "",
+    alternate_actors: [],
+    alive: "",
+    image:
+      "https://ui-avatars.com/api/?name=blank&color=3498db&background=B2EBF2&size=80",
+  });
+
+  const load = useCallback(async () => {
+    const re = localStorage.getItem("wfs-character");
+    const pa = JSON.parse(re!);
+
+    setCharacter(pa);
+  }, []);
+
+  // initial Load
+  useEffect(() => {
+    load();
+  }, [load]);
+
   return (
     <>
       <div className="flex items-center">
@@ -16,20 +50,31 @@ export default function index() {
       <div className="flex flex-row gap-4 justify-center mt-8">
         <div className="bg-white p-4 py-10 w-1/4 rounded-lg drop-shadow-sm h-full">
           <div className="flex flex-col items-center">
-            <Image
-              className="rounded-full "
-              src="https://ui-avatars.com/api/?name=Blank&color=3498db&background=B2EBF2&size=300"
-              alt="avatar"
-              width={180}
-              height={180}
-            ></Image>
+            {character["image"] == "" ? (
+              <Image
+                className="rounded-full "
+                src={`https://ui-avatars.com/api/?name=${character["name"]}}&color=3498db&background=B2EBF2&size=300`}
+                alt="avatar"
+                width={180}
+                height={180}
+              ></Image>
+            ) : (
+              <Image
+                objectFit="cover"
+                className="rounded-full "
+                src={character.image}
+                alt="avatar"
+                width={180}
+                height={180}
+              ></Image>
+            )}
 
             <p className="mt-4 text-slate-600 font-semibold text-xl">
-              Harry Potter
+              {character.name}
             </p>
 
             <p className="mt-2 text-white text-xs bg-sky-300 font-semibold px-2 py-1 rounded-xl">
-              Human
+              {character.species}
             </p>
           </div>
         </div>
@@ -37,20 +82,35 @@ export default function index() {
         <div className="bg-white p-4 py-10 w-1/3 rounded-lg drop-shadow-sm ">
           <div className="grid grid-cols-2">
             <div>
-              <TextListTile header={"gender"} label={"male"} />
-              <TextListTile header={"house"} label={"Gryffindor"} />
-              <TextListTile header={"dateOfBirth"} label={"31-07-1980"} />
-              <TextListTile header={"yearOfBirth"} label={"1980"} />
-              <TextListTile header={"ancestry"} label={"half-blood"} />
-              <TextListTile header={"eyeColour"} label={"green"} />
+              <TextListTile header={"gender"} label={character.gender} />
+              <TextListTile header={"house"} label={character.house} />
+              <TextListTile
+                header={"dateOfBirth"}
+                label={character.dateOfBirth}
+              />
+              <TextListTile
+                header={"yearOfBirth"}
+                label={character.yearOfBirth}
+              />
+              <TextListTile header={"ancestry"} label={character.ancestry} />
+              <TextListTile header={"eyeColour"} label={character.eyeColour} />
             </div>
             <div>
-              <TextListTile header={"hairColour"} label={"black"} />
-              <TextListTile header={"patronus"} label={"stag"} />
-              <TextListTile header={"hogwartsStudent"} label={"true"} />
-              <TextListTile header={"hogwartsStaff"} label={"true"} />
-              <TextListTile header={"actor"} label={"Daniel Radcliffe"} />
-              <TextListTile header={"alive"} label={"true"} />
+              <TextListTile
+                header={"hairColour"}
+                label={character.hairColour}
+              />
+              <TextListTile header={"patronus"} label={character.patronus} />
+              <TextListTile
+                header={"hogwartsStudent"}
+                label={character.hogwartsStudent}
+              />
+              <TextListTile
+                header={"hogwartsStaff"}
+                label={character.hogwartsStaff}
+              />
+              <TextListTile header={"actor"} label={character.actor} />
+              <TextListTile header={"alive"} label={character.alive} />
             </div>
           </div>
         </div>

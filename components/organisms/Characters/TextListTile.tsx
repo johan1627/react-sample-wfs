@@ -2,7 +2,7 @@ import React from "react";
 
 interface TextListTileProps {
   header: string;
-  label: string;
+  label: string | number | boolean;
 }
 
 export default function TextListTile(props: TextListTileProps) {

@@ -126,6 +126,10 @@ export default function HomePage() {
     setEndIndex(end);
   };
 
+  const onCharacterDetail = (e: CharacterTypes) => {
+    localStorage.setItem("wfs-character", JSON.stringify(e));
+  };
+
   // initial Load
   useEffect(() => {
     gett();
@@ -237,6 +241,7 @@ export default function HomePage() {
                               <Image
                                 className="rounded-full h-10 w-10"
                                 src={item.image}
+                                objectFit="cover"
                                 alt="avatar"
                                 width={40}
                                 height={40}
@@ -244,9 +249,14 @@ export default function HomePage() {
                             )}
 
                             <Link href="/character/">
-                              <a className="cursor-pointer hover:underline font-medium text-sky-700 px-6 py-4 text-xs">
+                              <button
+                                onClick={() => {
+                                  onCharacterDetail(item);
+                                }}
+                                className="cursor-pointer hover:underline font-medium text-sky-700 px-6 py-4 text-xs"
+                              >
                                 {item.name}
-                              </a>
+                              </button>
                             </Link>
                           </div>
                         </td>
