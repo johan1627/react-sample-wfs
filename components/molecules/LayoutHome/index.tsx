@@ -10,7 +10,7 @@ export default function index(props: LayoutHomeProps) {
 
   return (
     <>
-      <div className="relative h-screen overflow-hidden">
+      <div className="relative h-screen overflow-auto">
         <nav className="fixed w-full top-0">
           <div className="h-14 bg-white drop-shadow-sm p-4">
             <Image
