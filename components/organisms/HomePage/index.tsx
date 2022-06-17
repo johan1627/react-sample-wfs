@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { fetchCharacters } from "../../../services/config/api_character";
 import { CharacterTypes } from "../../../services/data-types";
@@ -140,6 +142,25 @@ export default function HomePage() {
                   {characters.map((item: CharacterTypes) => (
                     <tr key={item.name + item.alternate_names[0]}>
                       <td>
+                        {item.image == "" ? (
+                          <Image
+                            className="rounded-full h-10 w-10"
+                            src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
+                            alt="avatar"
+                            width={40}
+                            height={40}
+                          ></Image>
+                        ) : (
+                          <Image
+                            className="rounded-full h-10 w-10"
+                            src={item.image}
+                            alt="avatar"
+                            width={40}
+                            height={40}
+                          ></Image>
+                        )}
+                      </td>
+                      <td>
                         <TableTextRow lable={item.name} />
                       </td>
                     </tr>
@@ -169,7 +190,6 @@ export default function HomePage() {
                 <div key={item.number}>
                   <button
                     onClick={() => {
-                      // get(item.number);
                       onThisPage(item.number);
                     }}
                   >
