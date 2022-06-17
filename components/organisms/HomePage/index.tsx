@@ -7,6 +7,7 @@ import { CharacterTypes } from "../../../services/data-types";
 import TableTextHeader from "../../atoms/TableTextHeader";
 import TableTextRow from "../../atoms/TableTextRow";
 import TextIcon from "../../atoms/TextIcon";
+import CircularLoadPages from "../../molecules/CircularLoadPages";
 import LayoutHome from "../../molecules/LayoutHome";
 
 export default function HomePage() {
@@ -21,7 +22,11 @@ export default function HomePage() {
   const [endPagingIndex, setEndPagingIndex] = useState(10);
   const [totalPage, setTotalPage] = useState(1);
 
+  // load
+  const [isLoading, setIsLoading] = useState(false);
+
   const gett = useCallback(async () => {
+    setIsLoading(true);
     // init
     let i = 10;
     let totalPage;
@@ -54,6 +59,8 @@ export default function HomePage() {
 
       // set to UI for Paging
       setTotalPage(totalPage);
+
+      setIsLoading(false);
     }
   }, [startPagingIndex, endPagingIndex, startIndex, endIndex]);
 
@@ -127,103 +134,109 @@ export default function HomePage() {
   return (
     <>
       <LayoutHome>
-        <>
-          <div className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg">
-            {/* table */}
-            <div className="overflow-auto">
-              <table className="divide-y divide-gray-200 w-full">
-                <thead className="bg-blue-50">
-                  <tr>
-                    <th>
-                      <TableTextHeader lable="Nama" />
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {characters.map((item: CharacterTypes) => (
-                    <tr key={item.name + item.alternate_names[0]}>
-                      <td>
-                        {item.image == "" ? (
-                          <Image
-                            className="rounded-full h-10 w-10"
-                            src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
-                            alt="avatar"
-                            width={40}
-                            height={40}
-                          ></Image>
-                        ) : (
-                          <Image
-                            className="rounded-full h-10 w-10"
-                            src={item.image}
-                            alt="avatar"
-                            width={40}
-                            height={40}
-                          ></Image>
-                        )}
-                      </td>
-                      <td>
-                        <Link href="/character/">
-                          <a className="cursor-pointer hover:underline">
-                            <TableTextRow lable={item.name} />
-                          </a>
-                        </Link>
-                      </td>
+        {isLoading ? (
+          <>
+            <CircularLoadPages />
+          </>
+        ) : (
+          <>
+            <div className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg">
+              {/* table */}
+              <div className="overflow-auto">
+                <table className="divide-y divide-gray-200 w-full">
+                  <thead className="bg-blue-50">
+                    <tr>
+                      <th>
+                        <TableTextHeader lable="Nama" />
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {characters.map((item: CharacterTypes) => (
+                      <tr key={item.name + item.alternate_names[0]}>
+                        <td>
+                          {item.image == "" ? (
+                            <Image
+                              className="rounded-full h-10 w-10"
+                              src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
+                              alt="avatar"
+                              width={40}
+                              height={40}
+                            ></Image>
+                          ) : (
+                            <Image
+                              className="rounded-full h-10 w-10"
+                              src={item.image}
+                              alt="avatar"
+                              width={40}
+                              height={40}
+                            ></Image>
+                          )}
+                        </td>
+                        <td>
+                          <Link href="/character/">
+                            <a className="cursor-pointer hover:underline">
+                              <TableTextRow lable={item.name} />
+                            </a>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex flex-row gap-2 items-center justify-center my-2">
+                <TextIcon
+                  onClick={() => {
+                    onToBeginningPages();
+                  }}
+                >
+                  <i className="fa-solid fa-angles-left hover:underline"></i>
+                </TextIcon>
+
+                <TextIcon
+                  onClick={() => {
+                    onBackPage();
+                  }}
+                >
+                  <i className="fa-solid fa-angle-left hover:underline"></i>
+                </TextIcon>
+
+                {pagingData.map((item: any) => (
+                  <div key={item.number}>
+                    <button
+                      onClick={() => {
+                        onThisPage(item.number);
+                      }}
+                    >
+                      <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
+                        {item.number}
+                      </p>
+                    </button>
+                  </div>
+                ))}
+
+                <TextIcon
+                  onClick={() => {
+                    onNextPage();
+                  }}
+                >
+                  <i className="fa-solid fa-angle-right hover:underline"></i>
+                </TextIcon>
+
+                <TextIcon
+                  onClick={() => {
+                    onToEndPages();
+                  }}
+                >
+                  <i className="fa-solid fa-angles-right hover:underline"></i>
+                </TextIcon>
+              </div>
             </div>
-
-            {/* Pagination */}
-            <div className="flex flex-row gap-2 items-center justify-center my-2">
-              <TextIcon
-                onClick={() => {
-                  onToBeginningPages();
-                }}
-              >
-                <i className="fa-solid fa-angles-left hover:underline"></i>
-              </TextIcon>
-
-              <TextIcon
-                onClick={() => {
-                  onBackPage();
-                }}
-              >
-                <i className="fa-solid fa-angle-left hover:underline"></i>
-              </TextIcon>
-
-              {pagingData.map((item: any) => (
-                <div key={item.number}>
-                  <button
-                    onClick={() => {
-                      onThisPage(item.number);
-                    }}
-                  >
-                    <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
-                      {item.number}
-                    </p>
-                  </button>
-                </div>
-              ))}
-
-              <TextIcon
-                onClick={() => {
-                  onNextPage();
-                }}
-              >
-                <i className="fa-solid fa-angle-right hover:underline"></i>
-              </TextIcon>
-
-              <TextIcon
-                onClick={() => {
-                  onToEndPages();
-                }}
-              >
-                <i className="fa-solid fa-angles-right hover:underline"></i>
-              </TextIcon>
-            </div>
-          </div>
-        </>
+          </>
+        )}
       </LayoutHome>
     </>
   );
