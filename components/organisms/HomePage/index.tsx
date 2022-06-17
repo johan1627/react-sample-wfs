@@ -194,11 +194,11 @@ export default function HomePage() {
             </div>
 
             {/* Grid */}
-            <div className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg">
+            <div className=" bg-white rounded-lg shadow-md hover:shadow-lg h-3/4 overflow-auto">
               {/* table */}
-              <div className="overflow-auto">
-                <table className="divide-y divide-gray-200 w-full">
-                  <thead className="bg-blue-50">
+              <div className="">
+                <table className="divide-y divide-gray-200 w-full  ">
+                  <thead className="bg-blue-100 sticky top-0 z-10">
                     <tr>
                       <th>
                         <TableTextHeader lable="Name" />
@@ -230,22 +230,26 @@ export default function HomePage() {
                         <td>
                           <div className="flex items-center justify-start py-2 ml-4">
                             {item.image == "" ? (
-                              <Image
-                                className="rounded-full h-10 w-10"
-                                src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
-                                alt="avatar"
-                                width={40}
-                                height={40}
-                              ></Image>
+                              <div>
+                                <Image
+                                  className="rounded-full h-10 w-10 block"
+                                  src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
+                                  alt="avatar"
+                                  width={40}
+                                  height={40}
+                                ></Image>
+                              </div>
                             ) : (
-                              <Image
-                                className="rounded-full h-10 w-10"
-                                src={item.image}
-                                objectFit="cover"
-                                alt="avatar"
-                                width={40}
-                                height={40}
-                              ></Image>
+                              <div>
+                                <Image
+                                  className="rounded-full h-10 w-10 block"
+                                  src={item.image}
+                                  objectFit="cover"
+                                  alt="avatar"
+                                  width={40}
+                                  height={40}
+                                ></Image>
+                              </div>
                             )}
 
                             <Link href="/character/">

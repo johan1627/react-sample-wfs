@@ -10,7 +10,7 @@ export default function index(props: LayoutHomeProps) {
 
   return (
     <>
-      <div className="relative h-screen overflow-auto">
+      <div className="relative h-screen overflow-hidden">
         <nav className="fixed w-full top-0">
           <div className="h-14 bg-white drop-shadow-sm p-4">
             <Image
@@ -22,7 +22,7 @@ export default function index(props: LayoutHomeProps) {
           </div>
         </nav>
         <div className="bg-white h-14"></div>
-        <div className="bg-slate-100 h-full px-4 py-2">{children}</div>
+        <div className="bg-slate-100 h-screen px-4 py-2">{children}</div>
       </div>
     </>
   );
