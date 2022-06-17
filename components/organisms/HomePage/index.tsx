@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
+import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { fetchCharacters } from "../../../services/config/api_character";
 import { CharacterTypes } from "../../../services/data-types";
@@ -161,7 +162,11 @@ export default function HomePage() {
                         )}
                       </td>
                       <td>
-                        <TableTextRow lable={item.name} />
+                        <Link href="/character/">
+                          <a className="cursor-pointer hover:underline">
+                            <TableTextRow lable={item.name} />
+                          </a>
+                        </Link>
                       </td>
                     </tr>
                   ))}
