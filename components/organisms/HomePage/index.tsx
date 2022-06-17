@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
@@ -11,6 +12,9 @@ import CircularLoadPages from "../../molecules/CircularLoadPages";
 import LayoutHome from "../../molecules/LayoutHome";
 
 export default function HomePage() {
+  // number of data, each page
+  const [numOfCharacterListo, setNumOfCharacterList] = useState(10);
+
   // characters
   const [characters, setCharacters] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
@@ -21,14 +25,48 @@ export default function HomePage() {
   const [startPagingIndex, setStartPagingIndex] = useState(0);
   const [endPagingIndex, setEndPagingIndex] = useState(10);
   const [totalPage, setTotalPage] = useState(1);
+  // arrow
+  const [disableArrowRight, setDisableArrowRight] = useState(false);
+  const [disableArrowLeft, setDisableArrowLeft] = useState(false);
 
   // load
   const [isLoading, setIsLoading] = useState(false);
 
+  const enTotalPages = async (numverOfList: number) => {
+    const res = await fetchCharacters();
+
+    let i = numverOfList;
+    let totalPages;
+    if (res?.statusCode == 200) {
+      const length = res.data.length;
+      totalPages = Math.ceil(length / i);
+
+      // hidden arrow
+      if (totalPages < 10) {
+        setDisableArrowRight(true);
+        setDisableArrowLeft(true);
+      } else {
+        setDisableArrowRight(false);
+        setDisableArrowLeft(false);
+      }
+    }
+
+    return totalPages;
+  };
+
   const gett = useCallback(async () => {
     setIsLoading(true);
     // init
-    let i = 10;
+    let i = numOfCharacterListo;
+    const n = Cookies.get("numberOfCharacterList");
+
+    if (n == undefined) {
+      i = numOfCharacterListo;
+    } else {
+      i = parseInt(n);
+      setNumOfCharacterList(i);
+    }
+
     let totalPage;
     let numberPaging = [];
 
@@ -37,6 +75,13 @@ export default function HomePage() {
     if (res?.statusCode == 200) {
       const length = res.data.length;
       totalPage = Math.ceil(length / i);
+
+      // hidden arrow
+      if (endPagingIndex == 10) {
+        setDisableArrowLeft(true);
+      } else {
+        setDisableArrowLeft(false);
+      }
 
       // set new Object for paging
       for (let start = 1; start <= totalPage; start++) {
@@ -62,11 +107,18 @@ export default function HomePage() {
 
       setIsLoading(false);
     }
-  }, [startPagingIndex, endPagingIndex, startIndex, endIndex]);
+  }, [
+    startPagingIndex,
+    endPagingIndex,
+    startIndex,
+    endIndex,
+    numOfCharacterListo,
+  ]);
 
   const onThisPage = (e: number) => {
-    const end = e * 10;
-    const start = end - 10;
+    const co = Cookies.get("numberOfCharacterList");
+    const end = e * parseInt(co!);
+    const start = end - parseInt(co!);
 
     setStartIndex(start);
     setEndIndex(end);
@@ -78,8 +130,10 @@ export default function HomePage() {
     setEndPagingIndex(10);
 
     // characters
+    const co = Cookies.get("numberOfCharacterList");
+
     setStartIndex(0);
-    setEndIndex(10);
+    setEndIndex(parseInt(co!));
   };
 
   const onToEndPages = () => {
@@ -91,8 +145,10 @@ export default function HomePage() {
     setEndPagingIndex(pEnd);
 
     // characters
-    const end = totalPage * 10;
-    const start = end - 10;
+    const co = Cookies.get("numberOfCharacterList");
+
+    const end = totalPage * parseInt(co!);
+    const start = end - parseInt(co!);
 
     setStartIndex(start);
     setEndIndex(end);
@@ -130,6 +186,18 @@ export default function HomePage() {
     localStorage.setItem("wfs-character", JSON.stringify(e));
   };
 
+  const onChangedDataList = (e: any) => {
+    const v = e.target.value;
+    setNumOfCharacterList(v);
+    // save to cookies as profiler-user
+    Cookies.set("numberOfCharacterList", v, { expires: 30 });
+
+    setStartIndex(0);
+    setEndIndex(v);
+
+    enTotalPages(v);
+  };
+
   // initial Load
   useEffect(() => {
     gett();
@@ -144,60 +212,11 @@ export default function HomePage() {
           </>
         ) : (
           <>
-            {/* Pagination */}
-            <div className="flex flex-row gap-2 items-center justify-end my-2 mx-4">
-              <TextIcon
-                onClick={() => {
-                  onToBeginningPages();
-                }}
-              >
-                <i className="fa-solid fa-angles-left hover:underline"></i>
-              </TextIcon>
-
-              <TextIcon
-                onClick={() => {
-                  onBackPage();
-                }}
-              >
-                <i className="fa-solid fa-angle-left hover:underline"></i>
-              </TextIcon>
-
-              {pagingData.map((item: any) => (
-                <div key={item.number}>
-                  <button
-                    onClick={() => {
-                      onThisPage(item.number);
-                    }}
-                  >
-                    <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
-                      {item.number}
-                    </p>
-                  </button>
-                </div>
-              ))}
-
-              <TextIcon
-                onClick={() => {
-                  onNextPage();
-                }}
-              >
-                <i className="fa-solid fa-angle-right hover:underline"></i>
-              </TextIcon>
-
-              <TextIcon
-                onClick={() => {
-                  onToEndPages();
-                }}
-              >
-                <i className="fa-solid fa-angles-right hover:underline"></i>
-              </TextIcon>
-            </div>
-
             {/* Grid */}
             <div className=" bg-white rounded-lg shadow-md hover:shadow-lg h-3/4 overflow-auto">
               {/* table */}
               <div className="">
-                <table className="divide-y divide-gray-200 w-full  ">
+                <table className="divide-y divide-gray-200 w-full">
                   <thead className="bg-blue-100 sticky top-0 z-10">
                     <tr>
                       <th>
@@ -285,6 +304,82 @@ export default function HomePage() {
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex flex-row gap-2 items-center justify-end my-2 mx-4">
+              {disableArrowLeft ? (
+                <></>
+              ) : (
+                <>
+                  <TextIcon
+                    onClick={() => {
+                      onToBeginningPages();
+                    }}
+                  >
+                    <i className="fa-solid fa-angles-left hover:underline"></i>
+                  </TextIcon>
+
+                  <TextIcon
+                    onClick={() => {
+                      onBackPage();
+                    }}
+                  >
+                    <i className="fa-solid fa-angle-left hover:underline"></i>
+                  </TextIcon>
+                </>
+              )}
+
+              {pagingData.map((item: any) => (
+                <div key={item.number}>
+                  <button
+                    onClick={() => {
+                      onThisPage(item.number);
+                    }}
+                  >
+                    <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
+                      {item.number}
+                    </p>
+                  </button>
+                </div>
+              ))}
+
+              {disableArrowRight ? (
+                <></>
+              ) : (
+                <>
+                  <TextIcon
+                    onClick={() => {
+                      onNextPage();
+                    }}
+                  >
+                    <i className="fa-solid fa-angle-right hover:underline"></i>
+                  </TextIcon>
+
+                  <TextIcon
+                    onClick={() => {
+                      onToEndPages();
+                    }}
+                  >
+                    <i className="fa-solid fa-angles-right hover:underline"></i>
+                  </TextIcon>
+                </>
+              )}
+
+              <select
+                className="text-xs px-2 rounded-md drop-shadow"
+                value={numOfCharacterListo}
+                onChange={(e) => {
+                  onChangedDataList(e);
+                }}
+              >
+                <option>5</option>
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+                <option>75</option>
+                <option>100</option>
+              </select>
             </div>
           </>
         )}
