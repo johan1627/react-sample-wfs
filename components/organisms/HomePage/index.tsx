@@ -8,7 +8,6 @@ import { CharacterTypes } from "../../../services/data-types";
 import TableTextHeader from "../../atoms/TableTextHeader";
 import TableTextRow from "../../atoms/TableTextRow";
 import TextIcon from "../../atoms/TextIcon";
-import CircularLoadPages from "../../molecules/CircularLoadPages";
 import LayoutHome from "../../molecules/LayoutHome";
 
 export default function HomePage() {
@@ -37,9 +36,6 @@ export default function HomePage() {
   // arrow
   const [disableArrowRight, setDisableArrowRight] = useState(false);
   const [disableArrowLeft, setDisableArrowLeft] = useState(false);
-
-  // load
-  const [isLoading, setIsLoading] = useState(false);
 
   const enTotalPages = async (numverOfList: number) => {
     const res = await fetchCharacters();
@@ -215,183 +211,177 @@ export default function HomePage() {
   return (
     <>
       <LayoutHome>
-        {isLoading ? (
-          <>
-            <CircularLoadPages />
-          </>
-        ) : (
-          <>
-            {/* Grid */}
-            <div className=" bg-white rounded-lg shadow-md hover:shadow-lg h-3/4 overflow-auto">
-              {/* table */}
-              <div className="">
-                <table className="divide-y divide-gray-200 w-full">
-                  <thead className="bg-blue-100 sticky top-0 z-10">
-                    <tr>
-                      <th>
-                        <TableTextHeader lable="Name" />
-                      </th>
+        <>
+          {/* Grid */}
+          <div className=" bg-white rounded-lg shadow-md hover:shadow-lg h-3/4 overflow-auto">
+            {/* table */}
+            <div className="">
+              <table className="divide-y divide-gray-200 w-full">
+                <thead className="bg-blue-100 sticky top-0 z-10">
+                  <tr>
+                    <th>
+                      <TableTextHeader lable="Name" />
+                    </th>
 
-                      <th>
-                        <TableTextHeader lable="Species" />
-                      </th>
-                      <th>
-                        <TableTextHeader lable="Gender" />
-                      </th>
+                    <th>
+                      <TableTextHeader lable="Species" />
+                    </th>
+                    <th>
+                      <TableTextHeader lable="Gender" />
+                    </th>
 
-                      <th>
-                        <TableTextHeader lable="House" />
-                      </th>
+                    <th>
+                      <TableTextHeader lable="House" />
+                    </th>
 
-                      <th>
-                        <TableTextHeader lable="DateOfBirth" />
-                      </th>
+                    <th>
+                      <TableTextHeader lable="DateOfBirth" />
+                    </th>
 
-                      <th>
-                        <TableTextHeader lable="Ancestry" />
-                      </th>
+                    <th>
+                      <TableTextHeader lable="Ancestry" />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {characters.map((item: CharacterTypes) => (
+                    <tr key={item.name + item.alternate_names[0]}>
+                      <td>
+                        <div className="flex items-center justify-start py-2 ml-4">
+                          {item.image == "" ? (
+                            <div>
+                              <Image
+                                className="rounded-full h-10 w-10 block"
+                                src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
+                                alt="avatar"
+                                width={40}
+                                height={40}
+                              ></Image>
+                            </div>
+                          ) : (
+                            <div>
+                              <Image
+                                className="rounded-full h-10 w-10 block"
+                                src={item.image}
+                                objectFit="cover"
+                                alt="avatar"
+                                width={40}
+                                height={40}
+                              ></Image>
+                            </div>
+                          )}
+
+                          <Link href="/character/">
+                            <button
+                              onClick={() => {
+                                onCharacterDetail(item);
+                              }}
+                              className="cursor-pointer hover:underline font-medium text-sky-700 px-6 py-4 text-xs"
+                            >
+                              {item.name}
+                            </button>
+                          </Link>
+                        </div>
+                      </td>
+
+                      <td>
+                        <TableTextRow lable={item.species} />
+                      </td>
+                      <td>
+                        <TableTextRow lable={item.gender} />
+                      </td>
+                      <td>
+                        <TableTextRow lable={item.house} />
+                      </td>
+                      <td>
+                        <TableTextRow lable={item.dateOfBirth} />
+                      </td>
+                      <td>
+                        <TableTextRow lable={item.ancestry} />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {characters.map((item: CharacterTypes) => (
-                      <tr key={item.name + item.alternate_names[0]}>
-                        <td>
-                          <div className="flex items-center justify-start py-2 ml-4">
-                            {item.image == "" ? (
-                              <div>
-                                <Image
-                                  className="rounded-full h-10 w-10 block"
-                                  src={`https://ui-avatars.com/api/?name=${item.name}}&color=3498db&background=B2EBF2&size=80`}
-                                  alt="avatar"
-                                  width={40}
-                                  height={40}
-                                ></Image>
-                              </div>
-                            ) : (
-                              <div>
-                                <Image
-                                  className="rounded-full h-10 w-10 block"
-                                  src={item.image}
-                                  objectFit="cover"
-                                  alt="avatar"
-                                  width={40}
-                                  height={40}
-                                ></Image>
-                              </div>
-                            )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-                            <Link href="/character/">
-                              <button
-                                onClick={() => {
-                                  onCharacterDetail(item);
-                                }}
-                                className="cursor-pointer hover:underline font-medium text-sky-700 px-6 py-4 text-xs"
-                              >
-                                {item.name}
-                              </button>
-                            </Link>
-                          </div>
-                        </td>
+          {/* Pagination */}
+          <div className="flex flex-row gap-2 items-center justify-end my-2 mx-4">
+            {disableArrowLeft ? (
+              <></>
+            ) : (
+              <>
+                <TextIcon
+                  onClick={() => {
+                    onToBeginningPages();
+                  }}
+                >
+                  <i className="fa-solid fa-angles-left hover:underline"></i>
+                </TextIcon>
 
-                        <td>
-                          <TableTextRow lable={item.species} />
-                        </td>
-                        <td>
-                          <TableTextRow lable={item.gender} />
-                        </td>
-                        <td>
-                          <TableTextRow lable={item.house} />
-                        </td>
-                        <td>
-                          <TableTextRow lable={item.dateOfBirth} />
-                        </td>
-                        <td>
-                          <TableTextRow lable={item.ancestry} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <TextIcon
+                  onClick={() => {
+                    onBackPage();
+                  }}
+                >
+                  <i className="fa-solid fa-angle-left hover:underline"></i>
+                </TextIcon>
+              </>
+            )}
+
+            {pagingData.map((item: any) => (
+              <div key={item.number}>
+                <button
+                  onClick={() => {
+                    onThisPage(item.number);
+                  }}
+                >
+                  <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
+                    {item.number}
+                  </p>
+                </button>
               </div>
-            </div>
+            ))}
 
-            {/* Pagination */}
-            <div className="flex flex-row gap-2 items-center justify-end my-2 mx-4">
-              {disableArrowLeft ? (
-                <></>
-              ) : (
-                <>
-                  <TextIcon
-                    onClick={() => {
-                      onToBeginningPages();
-                    }}
-                  >
-                    <i className="fa-solid fa-angles-left hover:underline"></i>
-                  </TextIcon>
+            {disableArrowRight ? (
+              <></>
+            ) : (
+              <>
+                <TextIcon
+                  onClick={() => {
+                    onNextPage();
+                  }}
+                >
+                  <i className="fa-solid fa-angle-right hover:underline"></i>
+                </TextIcon>
 
-                  <TextIcon
-                    onClick={() => {
-                      onBackPage();
-                    }}
-                  >
-                    <i className="fa-solid fa-angle-left hover:underline"></i>
-                  </TextIcon>
-                </>
-              )}
+                <TextIcon
+                  onClick={() => {
+                    onToEndPages();
+                  }}
+                >
+                  <i className="fa-solid fa-angles-right hover:underline"></i>
+                </TextIcon>
+              </>
+            )}
 
-              {pagingData.map((item: any) => (
-                <div key={item.number}>
-                  <button
-                    onClick={() => {
-                      onThisPage(item.number);
-                    }}
-                  >
-                    <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
-                      {item.number}
-                    </p>
-                  </button>
-                </div>
-              ))}
-
-              {disableArrowRight ? (
-                <></>
-              ) : (
-                <>
-                  <TextIcon
-                    onClick={() => {
-                      onNextPage();
-                    }}
-                  >
-                    <i className="fa-solid fa-angle-right hover:underline"></i>
-                  </TextIcon>
-
-                  <TextIcon
-                    onClick={() => {
-                      onToEndPages();
-                    }}
-                  >
-                    <i className="fa-solid fa-angles-right hover:underline"></i>
-                  </TextIcon>
-                </>
-              )}
-
-              <select
-                className="text-xs px-2 rounded-md drop-shadow"
-                value={numOfCharacterListo}
-                onChange={(e) => {
-                  onChangedDataList(e);
-                }}
-              >
-                <option>5</option>
-                <option>10</option>
-                <option>25</option>
-                <option>50</option>
-                <option>75</option>
-                <option>100</option>
-              </select>
-            </div>
-          </>
-        )}
+            <select
+              className="text-xs px-2 rounded-md drop-shadow"
+              value={numOfCharacterListo}
+              onChange={(e) => {
+                onChangedDataList(e);
+              }}
+            >
+              <option>5</option>
+              <option>10</option>
+              <option>25</option>
+              <option>50</option>
+              <option>75</option>
+              <option>100</option>
+            </select>
+          </div>
+        </>
       </LayoutHome>
     </>
   );
