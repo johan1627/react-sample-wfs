@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { fetchCharacters } from "../../../services/config/api_character";
 import { CharacterTypes } from "../../../services/data-types";
 import TableTextHeader from "../../atoms/TableTextHeader";
@@ -7,19 +7,22 @@ import TextIcon from "../../atoms/TextIcon";
 import LayoutHome from "../../molecules/LayoutHome";
 
 export default function HomePage() {
+  // characters
   const [characters, setCharacters] = useState([]);
-  const [paging, setPaging] = useState<{ number: number }[]>([]);
-  const [currentPages, setCurrentPages] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
+
+  // pagination
+  const [pagingData, setPagingData] = useState<{ number: number }[]>([]);
+  const [startPagingIndex, setStartPagingIndex] = useState(0);
+  const [endPagingIndex, setEndPagingIndex] = useState(10);
   const [totalPage, setTotalPage] = useState(1);
 
-  const get = async (curPages: number) => {
+  const gett = useCallback(async () => {
     // init
     let i = 10;
     let totalPage;
     let numberPaging = [];
-
-    let startIndex = 0;
-    let endIndex = 0;
 
     const res = await fetchCharacters();
 
@@ -33,16 +36,14 @@ export default function HomePage() {
           number: start,
         };
         numberPaging.push(newPag);
-        const newPaging = numberPaging.slice(0, 10);
 
-        // console.log(newPaging);
-        setPaging(newPaging);
+        const newPaging = numberPaging.slice(startPagingIndex, endPagingIndex);
+
+        // set ke UI
+        setPagingData(newPaging);
       }
 
       // set new Array
-      endIndex = curPages * i;
-      startIndex = endIndex - i;
-
       const newArr = res.data.slice(startIndex, endIndex);
 
       // set to UI for Data Character
@@ -51,36 +52,74 @@ export default function HomePage() {
       // set to UI for Paging
       setTotalPage(totalPage);
     }
+  }, [startPagingIndex, endPagingIndex, startIndex, endIndex]);
+
+  const onThisPage = (e: number) => {
+    const end = e * 10;
+    const start = end - 10;
+
+    setStartIndex(start);
+    setEndIndex(end);
   };
 
   const onToBeginningPages = () => {
-    setCurrentPages(1);
-    get(1);
+    // pagination
+    setStartPagingIndex(0);
+    setEndPagingIndex(10);
+
+    // characters
+    setStartIndex(0);
+    setEndIndex(10);
   };
 
   const onToEndPages = () => {
-    setCurrentPages(totalPage);
-    get(totalPage);
+    // pagination
+    const pStart = totalPage - (totalPage % 10);
+    const pEnd = totalPage;
+
+    setStartPagingIndex(pStart);
+    setEndPagingIndex(pEnd);
+
+    // characters
+    const end = totalPage * 10;
+    const start = end - 10;
+
+    setStartIndex(start);
+    setEndIndex(end);
   };
 
   const onBackPage = () => {
-    if (currentPages == 1) return;
+    if (startPagingIndex == 0) return;
 
-    setCurrentPages(currentPages - 1);
-    get(currentPages - 1);
+    // pagination
+    setStartPagingIndex(startPagingIndex - 10);
+    setEndPagingIndex(endPagingIndex - 10);
+
+    // characters
+    const start = (startPagingIndex - 10) * 10;
+    const end = start + 10;
+    setStartIndex(start);
+    setEndIndex(end);
   };
 
   const onNextPage = () => {
-    if (currentPages == totalPage) return;
+    if (endPagingIndex > totalPage - (totalPage % 10)) return;
 
-    setCurrentPages(currentPages + 1);
-    get(currentPages + 1);
+    // pagination
+    setStartPagingIndex(startPagingIndex + 10);
+    setEndPagingIndex(endPagingIndex + 10);
+
+    // characters
+    const start = endPagingIndex * 10;
+    const end = start + 10;
+    setStartIndex(start);
+    setEndIndex(end);
   };
 
   // initial Load
   useEffect(() => {
-    get(currentPages);
-  }, [currentPages]);
+    gett();
+  }, [gett]);
 
   return (
     <>
@@ -126,12 +165,12 @@ export default function HomePage() {
                 <i className="fa-solid fa-angle-left hover:underline"></i>
               </TextIcon>
 
-              {paging.map((item: any) => (
+              {pagingData.map((item: any) => (
                 <div key={item.number}>
                   <button
                     onClick={() => {
-                      // console.log(item.number);
-                      setCurrentPages(item.number);
+                      // get(item.number);
+                      onThisPage(item.number);
                     }}
                   >
                     <p className="px-2 py-1 text-slate-600 text-sm cursor-pointer hover:underline">
