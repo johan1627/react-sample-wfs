@@ -169,7 +169,8 @@ export default function HomePage() {
               </table>
             </div>
 
-            <div className="flex flex-row gap-2 items-center">
+            {/* Pagination */}
+            <div className="flex flex-row gap-2 items-center justify-center my-2">
               <TextIcon
                 onClick={() => {
                   onToBeginningPages();
