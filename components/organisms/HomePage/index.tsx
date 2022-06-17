@@ -12,13 +12,22 @@ import CircularLoadPages from "../../molecules/CircularLoadPages";
 import LayoutHome from "../../molecules/LayoutHome";
 
 export default function HomePage() {
+  // cookies
+  const coo = Cookies.get("numberOfCharacterList");
+  let endd;
+  if (coo == undefined) {
+    endd = 10;
+  } else {
+    endd = coo;
+  }
+
   // number of data, each page
   const [numOfCharacterListo, setNumOfCharacterList] = useState(10);
 
   // characters
   const [characters, setCharacters] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(10);
+  const [endIndex, setEndIndex] = useState(endd);
 
   // pagination
   const [pagingData, setPagingData] = useState<{ number: number }[]>([]);
@@ -55,7 +64,7 @@ export default function HomePage() {
   };
 
   const gett = useCallback(async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     // init
     let i = numOfCharacterListo;
     const n = Cookies.get("numberOfCharacterList");
@@ -105,7 +114,7 @@ export default function HomePage() {
       // set to UI for Paging
       setTotalPage(totalPage);
 
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   }, [
     startPagingIndex,
