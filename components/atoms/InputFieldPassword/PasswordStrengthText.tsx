@@ -14,7 +14,8 @@ export default function PasswordStrengthText(props: PasswordStrengthTextProps) {
       strength == "Very weak" ||
       strength == "Weak" ||
       strength == "Not Match" ||
-      strength == "Email/password failed"
+      strength == "Email/password failed" ||
+      strength == "Email not registered"
         ? true
         : false,
     "text-emerald-500": strength == "Medium" ? true : false,

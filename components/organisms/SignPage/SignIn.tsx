@@ -23,19 +23,24 @@ export default function SignIn() {
 
     // get to local storage
     const getFromLocal = localStorage.getItem("tmp_credential");
-    const parse = JSON.parse(getFromLocal!);
-    const emailFromLocal = parse.email;
-    const passFromLocal = parse.pass;
 
-    // go home page
-    if (email != emailFromLocal) {
-      setMatchcredential("Email/password failed");
-    } else if (password != passFromLocal) {
-      setMatchcredential("Email/password failed");
+    if (getFromLocal != null) {
+      const parse = JSON.parse(getFromLocal!);
+      const emailFromLocal = parse.email;
+      const passFromLocal = parse.pass;
+
+      // go home page
+      if (email != emailFromLocal) {
+        setMatchcredential("Email/password failed");
+      } else if (password != passFromLocal) {
+        setMatchcredential("Email/password failed");
+      } else {
+        const smpToken = "BQmpPkQ1pLt9SOlkJVOL1QWWrPpc0IZ8k3CXXZ03";
+        Cookies.set("tmp-token", smpToken, { expires: 1 });
+        router.push("/");
+      }
     } else {
-      const smpToken = "BQmpPkQ1pLt9SOlkJVOL1QWWrPpc0IZ8k3CXXZ03";
-      Cookies.set("tmp-token", smpToken, { expires: 1 });
-      router.push("/");
+      setMatchcredential("Email not registered");
     }
 
     // end loading
@@ -88,6 +93,8 @@ export default function SignIn() {
                 lable="Sign In"
                 onClick={() => {
                   onSubmit();
+                  // const getFromLocal = localStorage.getItem("tmp_credential");
+                  // console.log(getFromLocal);
                 }}
                 disable={btnDisabled}
                 isLoading={isLoading}
