@@ -24,19 +24,23 @@ export default function HomePage() {
   const [numOfCharacterListo, setNumOfCharacterList] = useState(10);
 
   // characters
-  const [characters, setCharacters] = useState([]);
+  const [characters, setCharacters] = useState<any[]>([]);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(endd);
-  const [charactersAll, setCharactersAll] = useState([]);
+  const [charactersAll, setCharactersAll] = useState<any[]>([]);
 
   // pagination
   const [pagingData, setPagingData] = useState<{ number: number }[]>([]);
   const [startPagingIndex, setStartPagingIndex] = useState(0);
   const [endPagingIndex, setEndPagingIndex] = useState(10);
   const [totalPage, setTotalPage] = useState(1);
+
   // arrow
   const [disableArrowRight, setDisableArrowRight] = useState(false);
   const [disableArrowLeft, setDisableArrowLeft] = useState(false);
+
+  // sorting
+  const [isSorting, setIsSorting] = useState("ASC");
 
   const enTotalPages = async (numverOfList: number) => {
     const res = await fetchCharacters();
@@ -102,8 +106,11 @@ export default function HomePage() {
         setPagingData(newPaging);
       }
 
+      // sorting
+      const sortResult = onSorting(res.data, isSorting);
+
       // set new Array
-      const newArr = res.data.slice(startIndex, endIndex);
+      const newArr = sortResult.slice(startIndex, endIndex);
 
       // set to UI for Data Character
       setCharacters(newArr);
@@ -115,6 +122,7 @@ export default function HomePage() {
       // setIsLoading(false);
     }
   }, [
+    isSorting,
     startPagingIndex,
     endPagingIndex,
     startIndex,
@@ -206,13 +214,49 @@ export default function HomePage() {
   };
 
   const onSearch = (e: string) => {
-    // console.log("se", e.target.value);
-    // const search = charactersAll.find((element) => element.name < 9);
-    const search = charactersAll.find((item) => item["name"] === e);
+    const search = charactersAll.find(
+      (item) => item.name.toLowerCase() === e.toLowerCase()
+    );
+
+    if (e == "") {
+      setCharacters(charactersAll.slice(0, numOfCharacterListo));
+    }
 
     if (search) {
-      // console.log("ketemu");
       setCharacters([search]);
+    }
+  };
+
+  const onSorting = (data: any, is: string) => {
+    function compare(a: any, b: any) {
+      if (is == "ASC") {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      } else if (is == "DESC") {
+        if (b.name < a.name) {
+          return -1;
+        }
+        if (b.name > a.name) {
+          return 1;
+        }
+        return 0;
+      }
+    }
+    const sort = data.sort(compare);
+
+    return sort;
+  };
+
+  const onToggleSort = () => {
+    if (isSorting == "ASC") {
+      setIsSorting("DESC");
+    } else {
+      setIsSorting("ASC");
     }
   };
 
@@ -225,13 +269,13 @@ export default function HomePage() {
     <>
       <LayoutHome>
         <>
-          <div className="py-2 ">
+          <div className="py-2">
             <input
               onChange={(e) => {
                 const v = e.target.value;
                 onSearch(v);
               }}
-              className="px-2 text-slate-700 text-sm bg-white w-1/3 h-8 drop-shadow-sm rounded-md placeholder:text-xs placeholder:px-2"
+              className="px-2 text-slate-700 text-sm bg-white w-1/3 h-10 drop-shadow-sm rounded-md placeholder:text-xs placeholder:px-2"
               placeholder="search name..."
             ></input>
           </div>
@@ -243,7 +287,20 @@ export default function HomePage() {
                 <thead className="bg-blue-100 sticky top-0 z-10">
                   <tr>
                     <th>
-                      <TableTextHeader lable="Name" />
+                      <div className="flex items-center">
+                        <TableTextHeader lable="Name" />
+                        <a
+                          onClick={() => {
+                            onToggleSort();
+                          }}
+                        >
+                          {isSorting == "ASC" ? (
+                            <i className="fa-solid fa-arrow-up text-xs text-slate-500 cursor-pointer"></i>
+                          ) : (
+                            <i className="fa-solid fa-arrow-down text-xs text-slate-500 cursor-pointer"></i>
+                          )}
+                        </a>
+                      </div>
                     </th>
 
                     <th>
