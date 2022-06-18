@@ -5,6 +5,10 @@ export default function Document() {
     <Html className="scroll-smooth">
       <Head>
         <meta name="author" content="Johanns Sandida"></meta>
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
       </Head>
       <body>
         <Main />
